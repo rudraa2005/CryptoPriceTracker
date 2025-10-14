@@ -8,7 +8,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/yourusername/crypto-price-tracker/internal/crypto"
+	"github.com/rudraa2005/crypto-price-tracker/internal/crypto"
 )
 
 func priceHandler(w http.ResponseWriter, r *http.Request) {
