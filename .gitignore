@@ -8,9 +8,9 @@
 /*.dll
 /*.so
 /*.dylib
+.gocache/
 
-# Go modules
-/go.sum
+# Vendored dependencies
 /vendor/
 
 # IDE/editor files

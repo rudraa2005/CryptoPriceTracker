@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crypto Price Tracker</title>
+  <meta name="description" content="Minimal crypto tracker for live USD prices, quick comparisons, and trending coins.">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero panel">
+      <div class="eyebrow">Minimal market desk</div>
+      <h1>Crypto prices without the noise.</h1>
+      <p class="hero-copy">
+        Look up a live USD price, compare two assets, and scan what is trending right now.
+        Use CoinGecko coin IDs like <span>bitcoin</span>, <span>ethereum</span>, or <span>solana</span>.
+      </p>
+      <div class="hero-meta">
+        <div class="meta-item">
+          <strong>Quoted in</strong>
+          <span>USD</span>
+        </div>
+        <div class="meta-item" id="api-indicator">
+          <strong>Connection</strong>
+          <span id="api-status">Checking live data</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="dashboard">
+      <section class="panel panel-emphasis">
+        <div class="section-head">
+          <div>
+            <p class="section-label">Single Coin</p>
+            <h2>Quick lookup</h2>
+          </div>
+        </div>
+
+        <form id="single-form" class="stack-form">
+          <label for="single-symbol">Coin ID</label>
+          <input id="single-symbol" name="symbol" type="text" placeholder="bitcoin" autocomplete="off">
+          <div class="suggestions">
+            <button type="button" class="chip" data-fill="single-symbol" data-value="bitcoin">bitcoin</button>
+            <button type="button" class="chip" data-fill="single-symbol" data-value="ethereum">ethereum</button>
+            <button type="button" class="chip" data-fill="single-symbol" data-value="solana">solana</button>
+          </div>
+          <button type="submit" class="button">Fetch Price</button>
+        </form>
+
+        <article class="result-card" id="single-result">
+          <p class="result-label">Ready</p>
+          <h3>Enter a coin ID to load a live price.</h3>
+          <p class="result-note">The API returns CoinGecko IDs, not ticker shortcuts.</p>
+        </article>
+      </section>
+
+      <section class="panel">
+        <div class="section-head">
+          <div>
+            <p class="section-label">Comparison</p>
+            <h2>Side by side</h2>
+          </div>
+        </div>
+
+        <form id="compare-form" class="compare-form">
+          <div>
+            <label for="first-symbol">First coin</label>
+            <input id="first-symbol" name="symbol1" type="text" placeholder="bitcoin" autocomplete="off">
+          </div>
+          <div>
+            <label for="second-symbol">Second coin</label>
+            <input id="second-symbol" name="symbol2" type="text" placeholder="ethereum" autocomplete="off">
+          </div>
+          <div class="suggestions suggestions-inline">
+            <button type="button" class="chip" data-fill="first-symbol" data-value="bitcoin">set bitcoin</button>
+            <button type="button" class="chip" data-fill="second-symbol" data-value="ethereum">set ethereum</button>
+            <button type="button" class="chip" data-fill="second-symbol" data-value="solana">set solana</button>
+          </div>
+          <button type="submit" class="button button-secondary">Compare</button>
+        </form>
+
+        <article class="result-card" id="compare-result">
+          <p class="result-label">Awaiting input</p>
+          <h3>Compare two coins to see their current USD prices.</h3>
+          <p class="result-note">You can compare the same asset too, but it will not tell you much.</p>
+        </article>
+      </section>
+
+      <section class="panel panel-wide">
+        <div class="section-head section-head-spread">
+          <div>
+            <p class="section-label">Trending</p>
+            <h2>Market pulse</h2>
+          </div>
+          <button type="button" class="button button-ghost" id="refresh-trending">Refresh</button>
+        </div>
+
+        <div class="trend-meta">
+          <span id="trending-state">Loading live market movers...</span>
+          <span id="last-updated">Not updated yet</span>
+        </div>
+
+        <div class="trend-list" id="trending-list"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
