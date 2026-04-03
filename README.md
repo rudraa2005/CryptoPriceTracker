@@ -8,15 +8,49 @@ CryptoPriceTracker is a small Go web app that proxies live CoinGecko data and se
 
 The UI is embedded into the Go binary, so the project runs as a single server.
 
-## Run locally
+## Features
+
+- minimal black, white, and grey interface with no frontend build step
+- embedded static frontend served directly by the Go server
+- JSON API for prices, comparisons, trending coins, and health checks
+- CoinGecko-backed market data with optional API key support
+
+## Requirements
+
+- Go 1.24.6 or newer
+
+## Configuration
+
+The app reads configuration from environment variables:
+
+- `PORT`: HTTP port for the local server. Defaults to `8080`.
+- `API_KEY`: optional CoinGecko API key. Useful if you want better rate limits or use a paid CoinGecko plan.
+
+Example:
 
 ```bash
-PORT=8080 API_KEY=your_key_here go run .
+export API_KEY=your_coingecko_key
+export PORT=8080
+go run .
 ```
 
-`API_KEY` is optional for public CoinGecko access, but useful if you have stricter rate limits or a paid plan.
+You can also run it inline:
+
+```bash
+PORT=8080 API_KEY=your_coingecko_key go run .
+```
+
+## Run locally
 
 Open `http://localhost:8080` and use CoinGecko coin IDs such as `bitcoin`, `ethereum`, or `solana`.
+
+## Frontend
+
+The root route `/` serves the web interface. The page includes:
+
+- a single-coin lookup panel
+- a two-coin comparison panel
+- a trending coins panel with manual refresh
 
 ## API routes
 
@@ -25,3 +59,25 @@ Open `http://localhost:8080` and use CoinGecko coin IDs such as `bitcoin`, `ethe
 - `GET /api/prices?symbol1=bitcoin&symbol2=ethereum`
 - `GET /api/trending`
 - `GET /api/supported-currencies`
+
+Backward-compatible aliases from the earlier API shape are also available:
+
+- `GET /price`
+- `GET /prices`
+- `GET /trending`
+- `GET /supported_coins`
+
+## Example requests
+
+```bash
+curl "http://localhost:8080/api/price?symbol=bitcoin"
+curl "http://localhost:8080/api/prices?symbol1=bitcoin&symbol2=ethereum"
+curl "http://localhost:8080/api/trending"
+```
+
+## Testing
+
+```bash
+go test ./...
+go vet ./...
+```
