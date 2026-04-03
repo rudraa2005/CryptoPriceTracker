@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -113,5 +115,45 @@ func TestRootServesFrontend(t *testing.T) {
 
 	if !strings.Contains(rec.Body.String(), "Crypto prices without the noise.") {
 		t.Fatalf("expected frontend content, got %q", rec.Body.String())
+	}
+}
+
+func TestLoadDotEnvSetsValues(t *testing.T) {
+	dir := t.TempDir()
+	envFile := filepath.Join(dir, ".env")
+
+	if err := os.WriteFile(envFile, []byte("TEST_API_KEY=test-key\nTEST_PORT=9090\n"), 0o644); err != nil {
+		t.Fatalf("write env file: %v", err)
+	}
+
+	if err := loadDotEnv(envFile); err != nil {
+		t.Fatalf("loadDotEnv returned error: %v", err)
+	}
+
+	if got := os.Getenv("TEST_API_KEY"); got != "test-key" {
+		t.Fatalf("expected TEST_API_KEY to be set, got %q", got)
+	}
+
+	if got := os.Getenv("TEST_PORT"); got != "9090" {
+		t.Fatalf("expected TEST_PORT to be set, got %q", got)
+	}
+}
+
+func TestLoadDotEnvDoesNotOverrideExistingValues(t *testing.T) {
+	t.Setenv("TEST_API_KEY", "existing-key")
+
+	dir := t.TempDir()
+	envFile := filepath.Join(dir, ".env")
+
+	if err := os.WriteFile(envFile, []byte("TEST_API_KEY=file-key\n"), 0o644); err != nil {
+		t.Fatalf("write env file: %v", err)
+	}
+
+	if err := loadDotEnv(envFile); err != nil {
+		t.Fatalf("loadDotEnv returned error: %v", err)
+	}
+
+	if got := os.Getenv("TEST_API_KEY"); got != "existing-key" {
+		t.Fatalf("expected existing TEST_API_KEY to win, got %q", got)
 	}
 }

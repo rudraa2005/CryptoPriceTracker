@@ -21,7 +21,7 @@ The UI is embedded into the Go binary, so the project runs as a single server.
 
 ## Configuration
 
-The app reads configuration from environment variables:
+The app reads configuration from environment variables and also auto-loads a local `.env` file at startup if it exists.
 
 - `PORT`: HTTP port for the local server. Defaults to `8080`.
 - `API_KEY`: optional CoinGecko API key. Useful if you want better rate limits or use a paid CoinGecko plan.
@@ -29,15 +29,14 @@ The app reads configuration from environment variables:
 Example:
 
 ```bash
-export API_KEY=your_coingecko_key
-export PORT=8080
-go run .
+API_KEY=your_coingecko_key
+PORT=8080
 ```
 
-You can also run it inline:
+Save that into a local `.env` file, then run:
 
 ```bash
-PORT=8080 API_KEY=your_coingecko_key go run .
+go run .
 ```
 
 ## Run locally
