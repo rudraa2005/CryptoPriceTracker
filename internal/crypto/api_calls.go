@@ -70,8 +70,13 @@ type apiErrorResponse struct {
 }
 
 func NewClient() *Client {
+	baseURL := strings.TrimSpace(os.Getenv("COINGECKO_BASE_URL"))
+	if baseURL == "" {
+		baseURL = defaultBaseURL
+	}
+
 	return &Client{
-		baseURL: defaultBaseURL,
+		baseURL: strings.TrimRight(baseURL, "/"),
 		apiKey:  strings.TrimSpace(os.Getenv("API_KEY")),
 		httpClient: &http.Client{
 			Timeout: 10 * time.Second,
@@ -181,6 +186,14 @@ func normalizeCoinID(coinID string) (string, error) {
 	return normalized, nil
 }
 
+func (c *Client) authHeaderName() string {
+	if strings.Contains(c.baseURL, "pro-api.coingecko.com") {
+		return "x-cg-pro-api-key"
+	}
+
+	return "x-cg-demo-api-key"
+}
+
 func (c *Client) getJSON(ctx context.Context, path string, query url.Values, dest any) error {
 	endpoint := c.baseURL + path
 	if len(query) > 0 {
@@ -193,7 +206,7 @@ func (c *Client) getJSON(ctx context.Context, path string, query url.Values, des
 	}
 
 	if c.apiKey != "" {
-		req.Header.Set("x-cg-pro-api-key", c.apiKey)
+		req.Header.Set(c.authHeaderName(), c.apiKey)
 	}
 
 	resp, err := c.httpClient.Do(req)

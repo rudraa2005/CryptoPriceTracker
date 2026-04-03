@@ -50,8 +50,13 @@ func TestGetPricesBuildsExpectedRequest(t *testing.T) {
 			t.Fatalf("unexpected vs_currencies query: %s", got)
 		}
 
+		if got := r.Header.Get("x-cg-demo-api-key"); got != "demo-key" {
+			t.Fatalf("expected demo api key header, got %q", got)
+		}
+
 		return jsonResponse(http.StatusOK, `{"bitcoin":{"usd":92345.67},"ethereum":{"usd":1765.44}}`), nil
 	})
+	client.apiKey = "demo-key"
 
 	prices, err := client.GetPrices(context.Background(), "Bitcoin", "ethereum")
 	if err != nil {
@@ -64,6 +69,16 @@ func TestGetPricesBuildsExpectedRequest(t *testing.T) {
 
 	if got := prices["ethereum"]; got != 1765.44 {
 		t.Fatalf("unexpected ethereum price: %f", got)
+	}
+}
+
+func TestAuthHeaderNameUsesProHeaderForProBaseURL(t *testing.T) {
+	t.Parallel()
+
+	client := &Client{baseURL: "https://pro-api.coingecko.com/api/v3"}
+
+	if got := client.authHeaderName(); got != "x-cg-pro-api-key" {
+		t.Fatalf("expected pro auth header, got %q", got)
 	}
 }
 

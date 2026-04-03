@@ -25,6 +25,7 @@ The app reads configuration from environment variables and also auto-loads a loc
 
 - `PORT`: HTTP port for the local server. Defaults to `8080`.
 - `API_KEY`: optional CoinGecko API key. Useful if you want better rate limits or use a paid CoinGecko plan.
+- `COINGECKO_BASE_URL`: optional API base URL. Defaults to the public/demo API. Only point this to `https://pro-api.coingecko.com/api/v3` if you are using a Pro plan.
 
 Example:
 
